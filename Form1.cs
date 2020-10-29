@@ -95,7 +95,6 @@ namespace многоугольники_минизадача
                 dr = true;
             }
             this.Refresh();
-            DoubleBuffered = true;
         }
 
         private void Form1_MouseMove(object sender, MouseEventArgs e)
@@ -104,7 +103,6 @@ namespace многоугольники_минизадача
             {
                 p.X = e.X - delx;
                 p.Y = e.Y - dely;
-                DoubleBuffered = true;
                 this.Refresh();
             }
         }
@@ -114,8 +112,12 @@ namespace многоугольники_минизадача
             if (drag)
             {
                 drag = false;
-                DoubleBuffered = true;
             }
+        }
+
+        private void Form1_Load(object sender, EventArgs e)
+        {
+            DoubleBuffered = true;
         }
     }
 }
