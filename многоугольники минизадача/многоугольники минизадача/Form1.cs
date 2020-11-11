@@ -12,13 +12,15 @@ namespace многоугольники_минизадача
 {
     public partial class Form1 : Form
     {
-        Вершина ob;
         Point p;
         int delx;
         int dely;
         bool dr;
         bool drag;
         int num;
+        int i;
+
+        List<Вершина> вершины;
         public Form1()
         {
             InitializeComponent();
@@ -26,17 +28,19 @@ namespace многоугольники_минизадача
             квадратToolStripMenuItem.CheckOnClick = true;
             треугольникToolStripMenuItem.CheckOnClick = true;
             кругToolStripMenuItem.Checked = true;
+            вершины = new List<Вершина>();
             dr = false;
             drag = false;
         }
 
         private void Form1_Paint(object sender, PaintEventArgs e)
         {
-            e.Graphics.Clear(BackColor);
             if (dr)
             {
-                ob.P = p;
-                ob.Draw(e.Graphics);
+                foreach(Вершина i in вершины)
+                {
+                    i.Draw(e.Graphics);
+                }
             }
         }
 
@@ -63,19 +67,28 @@ namespace многоугольники_минизадача
 
         private void Form1_MouseDown(object sender, MouseEventArgs e)
         {
-            if (dr && ob.Check(e.X, e.Y))
+            if (вершины.Count == 0) dr = false;
+            i = -1;
+            while (i < вершины.Count - 1)
             {
-                if(e.Button == MouseButtons.Left)
-                {
-                    delx = e.X - ob.P.X;
-                    dely = e.Y - ob.P.Y;
-                    drag = true;
+                i++;
+                if (вершины[i].Check(e.X, e.Y))
+                    break;
+            }
+            if (dr && вершины[i].Check(e.X, e.Y))
+            {
+                   if (e.Button == MouseButtons.Left)
+                   {
+                       delx = e.X - вершины[i].P.X;
+                       dely = e.Y - вершины[i].P.Y;
+                       drag = true;
+                       вершины[i].P = new Point(e.X - delx, e.Y - dely);
                 }
-                if(e.Button == MouseButtons.Right)
-                {
-                    dr = false;
-                    ob = null;
-                }
+                   if (e.Button == MouseButtons.Right)
+                   {
+                       вершины[i] = null;
+                       вершины.RemoveAt(i);
+                   }
             }
             else
             {
@@ -83,14 +96,14 @@ namespace многоугольники_минизадача
                 {
                     switch (num)
                     {
-                        case 0: ob = new Круг(p); break;
-                        case 1: ob = new Квадрат(p); break;
-                        case 2: ob = new Треугольник(p); break;
-                        default: ob = new Круг(p); break;
+                        case 0: вершины.Add(new Круг(p)); break;
+                        case 1: вершины.Add(new Квадрат(p)); break;
+                        case 2: вершины.Add(new Треугольник(p)); break;
+                        default: вершины.Add(new Круг(p)); break;
                     }
                     dr = true;
-                    p.X = e.X;
-                    p.Y = e.Y;
+                    i++;
+                    вершины[i].P = new Point(e.X, e.Y);
                 }
                 dr = true;
             }
@@ -103,6 +116,7 @@ namespace многоугольники_минизадача
             {
                 p.X = e.X - delx;
                 p.Y = e.Y - dely;
+                вершины[i].P = new Point(e.X, e.Y);
                 this.Refresh();
             }
         }
