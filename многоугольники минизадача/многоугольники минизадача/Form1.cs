@@ -101,7 +101,6 @@ namespace многоугольники_минизадача
                         case 2: вершины.Add(new Треугольник(p)); break;
                         default: вершины.Add(new Круг(p)); break;
                     }
-                    dr = true;
                     i++;
                     вершины[i].P = new Point(e.X, e.Y);
                 }
