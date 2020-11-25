@@ -12,9 +12,13 @@ namespace многоугольники_минизадача
 {
     public partial class Form1 : Form
     {
+        Point p;
+        int delx;
+        int dely;
         bool dr;
         bool drag;
         int num;
+        int i;
 
         List<Вершина> вершины;
         public Form1()
@@ -33,9 +37,9 @@ namespace многоугольники_минизадача
         {
             if (dr)
             {
-                foreach(Вершина t in вершины)
+                foreach(Вершина i in вершины)
                 {
-                    t.Draw(e.Graphics);
+                    i.Draw(e.Graphics);
                 }
             }
         }
@@ -63,55 +67,56 @@ namespace многоугольники_минизадача
 
         private void Form1_MouseDown(object sender, MouseEventArgs e)
         {
-            int size;
-            if (вершины.Count == 0) size = 1;
-            else size = вершины.Count;
-            for (int i = 0; i < size; ++i)
+            if (вершины.Count == 0) dr = false;
+            i = -1;
+            while (i < вершины.Count - 1)
             {
-                if (dr && вершины[i].Check(e.X, e.Y))
-                {
-                    if (e.Button == MouseButtons.Left)
-                    {
-                        вершины[i].Delx = e.X - вершины[i].X;
-                        вершины[i].Dely = e.Y - вершины[i].Y;
-                        drag = true;
-                    }
-                    if (e.Button == MouseButtons.Right)
-                    {
-                        вершины[i] = null;
-                        вершины.RemoveAt(i);
-                        size--;
-                    }
+                i++;
+                if (вершины[i].Check(e.X, e.Y))
+                    break;
+            }
+            if (dr && вершины[i].Check(e.X, e.Y))
+            {
+                   if (e.Button == MouseButtons.Left)
+                   {
+                       delx = e.X - вершины[i].P.X;
+                       dely = e.Y - вершины[i].P.Y;
+                       drag = true;
+                       вершины[i].P = new Point(e.X - delx, e.Y - dely);
                 }
-
-                else
+                   if (e.Button == MouseButtons.Right)
+                   {
+                       вершины[i] = null;
+                       вершины.RemoveAt(i);
+                   }
+            }
+            else
+            {
+                if (e.Button == MouseButtons.Left)
                 {
-                    if (e.Button == MouseButtons.Left)
+                    switch (num)
                     {
-                        switch (num)
-                        {
-                            case 0: вершины.Add(new Круг(e.X, e.Y)); break;
-                            case 1: вершины.Add(new Квадрат(e.X, e.Y)); break;
-                            case 2: вершины.Add(new Треугольник(e.X, e.Y)); break;
-                            default: вершины.Add(new Круг(e.X, e.Y)); break;
-                        }
-                        dr = true;
+                        case 0: вершины.Add(new Круг(p)); break;
+                        case 1: вершины.Add(new Квадрат(p)); break;
+                        case 2: вершины.Add(new Треугольник(p)); break;
+                        default: вершины.Add(new Круг(p)); break;
                     }
+                    i++;
+                    вершины[i].P = new Point(e.X, e.Y);
                 }
+                dr = true;
             }
             this.Refresh();
         }
+
         private void Form1_MouseMove(object sender, MouseEventArgs e)
         {
-            for (int i = 0; i < вершины.Count; i++)
+            if (drag)
             {
-                if (drag && вершины[i].Check(e.X, e.Y))
-                {
-                    вершины[i].X = e.X - вершины[i].Delx;
-                    вершины[i].Y = e.Y - вершины[i].Dely;
-                    this.Refresh();
-
-                }
+                p.X = e.X - delx;
+                p.Y = e.Y - dely;
+                вершины[i].P = new Point(e.X, e.Y);
+                this.Refresh();
             }
         }
 

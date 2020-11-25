@@ -13,12 +13,15 @@ namespace многоугольники_минизадача
     abstract class Вершина
     {
         protected static int r;
-        protected Point p;
+        protected int x;
+        protected int y;
+        protected int delx;
+        protected int dely;
         protected static Color col;
-        public Вершина(Point p)
+        public Вершина(int x, int y)
         {
-            this.p.X = p.X;
-            this.p.Y = p.Y;
+            this.x = x;
+            this.y = y;
         }
 
         static Вершина()
@@ -27,30 +30,45 @@ namespace многоугольники_минизадача
             col = Color.Black;
         }
         public abstract void Draw(Graphics graf);
-        public abstract Point P { get; set; }
         public abstract int R { get; set; }
+        public abstract int X { get; set; }
+        public abstract int Y { get; set; }
+        public abstract int Delx { get; set; }
+        public abstract int Dely { get; set; }
         public abstract bool Check(int x, int y);
     }
     class Круг : Вершина
     {
-        public Круг(Point p): base(p) { }
+        public Круг(int x, int y): base(x, y) { }
         public override void Draw(Graphics g)
         {
-            g.FillEllipse(new SolidBrush(col), p.X - r/2, p.Y - r/2, r, r);
+            g.FillEllipse(new SolidBrush(col), x - r/2, y - r/2, r, r);
         }
         public override bool Check(int x, int y)
         {
-            if (Math.Pow(p.X - x, 2) + Math.Pow(p.Y - y, 2) <= Math.Pow(r, 2))
+            if (Math.Pow(this.x - x, 2) + Math.Pow(this.y - y, 2) <= Math.Pow(r, 2))
                 return true;
             else return false;
         }
-        public override Point P
+        public override int X
         {
-            get { return p; }
-            set
-            {
-                p = value;
-            }
+            get { return x; }
+            set { x = value; }
+        }
+        public override int Y
+        {
+            get { return y; }
+            set { y = value; }
+        }
+        public override int Delx
+        {
+            get { return delx; }
+            set { delx = value; }
+        }
+        public override int Dely
+        {
+            get { return dely; }
+            set { dely = value; }
         }
         public override int R
         {
@@ -66,23 +84,35 @@ namespace многоугольники_минизадача
     }
     class Квадрат : Вершина
     {
-        public Квадрат(Point p) : base(p) { }
+        public Квадрат(int x, int y) : base(x, y) { }
         public override void Draw(Graphics g)
         {
-            g.FillRectangle(new SolidBrush(col), p.X - r/2, p.Y - r/2, r, r);
+            g.FillRectangle(new SolidBrush(col), x - r/2, y - r/2, r, r);
         }
         public override bool Check(int x, int y)
         {
-            if (Math.Abs(p.X - x) <= r && Math.Abs(p.Y - y) <= r) return true;
+            if (Math.Abs(this.x - x) <= r && Math.Abs(this.y - y) <= r) return true;
             else return false;
         }
-        public override Point P
+        public override int X
         {
-            get { return p; }
-            set
-            {
-                p = value;
-            }
+            get { return x; }
+            set { x = value; }
+        }
+        public override int Y
+        {
+            get { return y; }
+            set { y = value; }
+        }
+        public override int Delx
+        {
+            get { return delx; }
+            set { delx = value; }
+        }
+        public override int Dely
+        {
+            get { return dely; }
+            set { dely = value; }
         }
         public override int R
         {
@@ -98,31 +128,43 @@ namespace многоугольники_минизадача
     }
     class Треугольник : Вершина
     {
-        public Треугольник(Point p) : base(p) { }
+        public Треугольник(int x, int y) : base(x, y) { }
         public override void Draw(Graphics g)
         {
             Point[] s = new Point[3];
-            s[0] = new Point(p.X, p.Y - r / 2);
-            s[1] = new Point(p.X - r/2, p.Y + r / 2);
-            s[2] = new Point(p.X + r/2, p.Y + r / 2);
+            s[0] = new Point(x, y - r / 2);
+            s[1] = new Point(x - r/2, y + r / 2);
+            s[2] = new Point(x + r/2, y + r / 2);
             g.FillPolygon(new SolidBrush(col), s);
         }
         public override bool Check(int x, int y)
         {
-            int i = (p.X - x) * (p.Y + r / 2 - (p.Y - r / 2)) - (- r / 2 * (p.Y - r / 2 - y));
-            int j = 0 - (p.X + r/2 - (p.X - r/2))*(p.Y + r/2 - y);
-            int l = (p.X + r / 2 - x)*(p.Y - r/2 - (p.Y + r/2)) - (p.X - (p.X + r/2))*(p.Y + r/2 - y);
+            int i = (this.x - x) * (this.y + r / 2 - (this.y - r / 2)) - (- r / 2 * (this.y - r / 2 - y));
+            int j = 0 - (this.x + r/2 - (this.x - r/2))*(this.y + r/2 - y);
+            int l = (this.x + r / 2 - x)*(this.y - r/2 - (this.y + r/2)) - (this.x - (this.x + r/2))*(this.y + r/2 - y);
             if ((i >= 0 && j >= 0 && l >= 0) || (i <= 0 && j <= 0 && l <= 0))
                 return true;
             else return false;
         }
-        public override Point P
+        public override int X
         {
-            get { return p; }
-            set
-            {
-                p = value;
-            }
+            get { return x; }
+            set { x = value; }
+        }
+        public override int Y
+        {
+            get { return y; }
+            set { y = value; }
+        }
+        public override int Delx
+        {
+            get { return delx; }
+            set { delx = value; }
+        }
+        public override int Dely
+        {
+            get { return dely; }
+            set { dely = value; }
         }
         public override int R
         {
